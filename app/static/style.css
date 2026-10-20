@@ -1,0 +1,289 @@
+:root {
+    font-family: Arial, Helvetica, sans-serif;
+    color: #243047;
+    background: #f4f7fb;
+    font-synthesis: none;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+    padding: 38px max(5%, calc((100% - 1200px) / 2));
+    background: #173b68;
+    color: white;
+}
+
+.header h1 {
+    margin: 8px 0;
+    font-size: clamp(28px, 4vw, 40px);
+}
+
+.header p {
+    color: #d7e4f6;
+    margin-bottom: 0;
+}
+
+.eyebrow {
+    font-size: 12px;
+    letter-spacing: 2px;
+}
+
+.status-badge {
+    background: #ffffff1c;
+    border: 1px solid #ffffff50;
+    padding: 12px 16px;
+    border-radius: 30px;
+    white-space: nowrap;
+}
+
+.container {
+    max-width: 1200px;
+    width: 90%;
+    margin: 28px auto;
+}
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+    margin-bottom: 24px;
+}
+
+.stat-card,
+.panel {
+    background: white;
+    border: 1px solid #e3e9f2;
+    border-radius: 14px;
+    box-shadow: 0 4px 16px #1c355508;
+}
+
+.stat-card {
+    padding: 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.stat-card span {
+    color: #6b7890;
+    font-size: 14px;
+}
+
+.stat-card strong {
+    color: #173b68;
+    font-size: 30px;
+}
+
+.panel {
+    padding: 24px;
+    margin-bottom: 22px;
+}
+
+.section-heading {
+    margin-bottom: 20px;
+}
+
+.section-heading h2 {
+    margin: 0 0 7px;
+    font-size: 21px;
+}
+
+.section-heading p {
+    margin: 0;
+    color: #78859a;
+    font-size: 14px;
+}
+
+.order-form {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+}
+
+label {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+input,
+select {
+    width: 100%;
+    min-width: 0;
+    padding: 11px 12px;
+    border: 1px solid #d5deeb;
+    border-radius: 8px;
+    background: white;
+    color: #243047;
+    font: inherit;
+}
+
+input:focus,
+select:focus {
+    outline: 2px solid #83b8f5;
+    border-color: #347bc2;
+}
+
+button {
+    border: 0;
+    border-radius: 8px;
+    padding: 12px 18px;
+    background: #2469ad;
+    color: white;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #174e86;
+}
+
+.order-form button {
+    align-self: end;
+}
+
+.table-grid,
+.menu-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.table-card,
+.dish-card {
+    border: 1px solid #e2e9f2;
+    border-radius: 11px;
+    padding: 18px;
+    background: #fbfcfe;
+}
+
+.table-card {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.table-card strong {
+    font-size: 21px;
+    color: #173b68;
+}
+
+.table-card > span:nth-child(2),
+.dish-card p {
+    color: #77849a;
+    font-size: 13px;
+}
+
+.table-status,
+.dish-category {
+    display: inline-block;
+    width: fit-content;
+    padding: 6px 9px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.available {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.occupied {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.reserved {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.dish-category {
+    background: #e6f0ff;
+    color: #245b9b;
+}
+
+.dish-card h3 {
+    margin: 14px 0 8px;
+}
+
+.dish-card p {
+    min-height: 32px;
+    line-height: 1.5;
+}
+
+.dish-card > strong {
+    color: #176e4c;
+}
+
+.table-scroll {
+    overflow-x: auto;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 14px;
+}
+
+th,
+td {
+    padding: 13px 12px;
+    border-bottom: 1px solid #e8edf4;
+    text-align: left;
+    vertical-align: middle;
+}
+
+th {
+    background: #f7f9fc;
+    color: #4e5d74;
+}
+
+.status-form {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 200px;
+}
+
+.status-form select {
+    min-width: 120px;
+}
+
+.small-button {
+    padding: 9px 12px;
+}
+
+.message {
+    margin-bottom: 18px;
+    padding: 13px 16px;
+    border-radius: 8px;
+}
+
+.success {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.error {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+footer {
+    text-align: center;
+    padding: 25

@@ -1,0 +1,199 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Restaurant Order - Quản lý nhà hàng</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<header class="header">
+    <div>
+        <p class="eyebrow">RESTAURANT MANAGEMENT SYSTEM</p>
+        <h1>Quản lý nhà hàng</h1>
+        <p>Quản lý món ăn, bàn ăn và đơn gọi món trên một giao diện.</p>
+    </div>
+    <span class="status-badge">● Hệ thống đặt món</span>
+</header>
+
+<main class="container">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="message {{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <section class="stats">
+        <article class="stat-card">
+            <span>Tổng số món</span>
+            <strong>{{ dishes|length }}</strong>
+        </article>
+        <article class="stat-card">
+            <span>Tổng số bàn</span>
+            <strong>{{ tables|length }}</strong>
+        </article>
+        <article class="stat-card">
+            <span>Đơn hàng gần đây</span>
+            <strong>{{ orders|length }}</strong>
+        </article>
+    </section>
+
+    <section class="panel">
+        <div class="section-heading">
+            <div>
+                <h2>Tạo đơn hàng</h2>
+                <p>Chọn bàn, món ăn và số lượng.</p>
+            </div>
+        </div>
+        <form action="{{ url_for('create_order') }}" method="post" class="order-form">
+            <label>
+                Tên khách hàng
+                <input type="text" name="customer_name" maxlength="150"
+                       placeholder="Ví dụ: Nguyễn Văn A">
+            </label>
+            <label>
+                Bàn ăn
+                <select name="table_id" required>
+                    <option value="">-- Chọn bàn --</option>
+                    {% for table in tables %}
+                        {% if table[3] == 'available' %}
+                            <option value="{{ table[0] }}">
+                                {{ table[1] }} — {{ table[2] }} chỗ
+                            </option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+            </label>
+            <label>
+                Món ăn
+                <select name="dish_id" required>
+                    <option value="">-- Chọn món --</option>
+                    {% for dish in dishes %}
+                        <option value="{{ dish[0] }}">
+                            {{ dish[1] }} — {{ "{:,.0f}".format(dish[3]) }} VNĐ
+                        </option>
+                    {% endfor %}
+                </select>
+            </label>
+            <label>
+                Số lượng
+                <input type="number" name="quantity" min="1" max="100"
+                       value="1" required>
+            </label>
+            <button type="submit">Tạo đơn hàng</button>
+        </form>
+    </section>
+
+    <section class="panel">
+        <div class="section-heading">
+            <div>
+                <h2>Trạng thái bàn ăn</h2>
+                <p>Theo dõi bàn trống và bàn đang sử dụng.</p>
+            </div>
+        </div>
+        <div class="table-grid">
+            {% for table in tables %}
+                <article class="table-card">
+                    <strong>{{ table[1] }}</strong>
+                    <span>{{ table[2] }} chỗ ngồi</span>
+                    <span class="table-status {{ table[3] }}">
+                        {% if table[3] == 'available' %}
+                            Còn trống
+                        {% elif table[3] == 'occupied' %}
+                            Đang sử dụng
+                        {% else %}
+                            Đã đặt
+                        {% endif %}
+                    </span>
+                </article>
+            {% endfor %}
+        </div>
+    </section>
+
+    <section class="panel">
+        <div class="section-heading">
+            <div>
+                <h2>Thực đơn</h2>
+                <p>Danh sách món ăn hiện đang phục vụ.</p>
+            </div>
+        </div>
+        <div class="menu-grid">
+            {% for dish in dishes %}
+                <article class="dish-card">
+                    <span class="dish-category">{{ dish[4] }}</span>
+                    <h3>{{ dish[1] }}</h3>
+                    <p>{{ dish[2] or 'Món ăn của nhà hàng' }}</p>
+                    <strong>{{ "{:,.0f}".format(dish[3]) }} VNĐ</strong>
+                </article>
+            {% else %}
+                <p>Chưa có món ăn trong thực đơn.</p>
+            {% endfor %}
+        </div>
+    </section>
+
+    <section class="panel">
+        <div class="section-heading">
+            <div>
+                <h2>Đơn hàng gần đây</h2>
+                <p>Thông tin đơn hàng lấy từ PostgreSQL.</p>
+            </div>
+        </div>
+        <div class="table-scroll">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Mã đơn</th>
+                        <th>Khách hàng</th>
+                        <th>Bàn</th>
+                        <th>Tổng tiền</th>
+                        <th>Trạng thái</th>
+                        <th>Cập nhật</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for order in orders %}
+                    <tr>
+                        <td>#{{ order[0] }}</td>
+                        <td>{{ order[1] or 'Khách tại bàn' }}</td>
+                        <td>{{ order[5] or '—' }}</td>
+                        <td>{{ "{:,.0f}".format(order[3]) }} VNĐ</td>
+                        <td>{{ order[2] }}</td>
+                        <td>
+                            {% if order[2] not in ['served', 'cancelled'] %}
+                                <form class="status-form"
+                                      action="{{ url_for('update_order_status', order_id=order[0]) }}"
+                                      method="post">
+                                    <select name="status" aria-label="Trạng thái đơn hàng">
+                                        <option value="pending"
+                                            {% if order[2] == 'pending' %}selected{% endif %}>
+                                            Chờ xử lý
+                                        </option>
+                                        <option value="preparing"
+                                            {% if order[2] == 'preparing' %}selected{% endif %}>
+                                            Đang chuẩn bị
+                                        </option>
+                                        <option value="served">Đã phục vụ</option>
+                                        <option value="cancelled">Đã hủy</option>
+                                    </select>
+                                    <button type="submit" class="small-button">Lưu</button>
+                                </form>
+                            {% else %}
+                                Đã kết thúc
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr><td colspan="6">Chưa có đơn hàng nào.</td></tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+</main>
+
+<footer>Restaurant Order System · Ubuntu · Docker · PostgreSQL</footer>
+</body>
+</html>
